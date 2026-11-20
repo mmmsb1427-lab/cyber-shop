@@ -3,149 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر الحلول الأمنية | محضار باشرحيل</title>
+    <title>عرض تقديمي تفاعلي: سيارات هوندا | محضار باشرحيل</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         :root {
-            --bg-body: #f4f6f9;
-            --bg-card: #ffffff;
-            --primary: #0f172a;
-            --accent: #2563eb;
-            --text-dark: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
+            --bg-dark: #0a0a0a;
+            --bg-slide: #141414;
+            --honda-red: #dc2626;
+            --text-white: #ffffff;
+            --text-gray: #9ca3af;
+            --border: #262626;
         }
-
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-dark);
-            font-family: 'Cairo', sans-serif;
-            line-height: 1.6;
-            padding-bottom: 60px;
-        }
-        .container { width: min(1100px, calc(100% - 40px)); margin: 0 auto; }
+        body { background-color: var(--bg-dark); color: var(--text-white); font-family: 'Cairo', sans-serif; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; overflow: hidden; }
         
-        /* الهيدر */
-        header {
-            text-align: center;
-            padding: 60px 20px;
-            background-color: var(--primary);
-            color: white;
-            border-radius: 16px;
-            margin-top: 30px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-        header h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 12px; }
-        header h1 span { color: var(--accent); }
-        header p { color: #94a3b8; font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
-
-        /* شبكة الخدمات والتجارة */
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
-        }
-        .product-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.02);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            transition: transform 0.3s ease;
-        }
-        .product-card:hover { transform: translateY(-5px); }
-        .badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background-color: #ef4444;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-        .icon { font-size: 3.5rem; margin-bottom: 15px; }
-        .product-card h3 { font-size: 1.3rem; margin-bottom: 10px; color: var(--primary); }
-        .product-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; text-align: justify; }
-        .price { font-size: 1.5rem; font-weight: 900; color: var(--accent); margin-bottom: 20px; }
+        .presentation-wrapper { width: 100%; max-width: 850px; background-color: var(--bg-slide); border: 2px solid var(--border); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.7); display: flex; flex-direction: column; height: 500px; justify-content: space-between; position: relative; }
         
-        .buy-link {
-            display: block;
-            background-color: #25d366; /* لون الواتساب الأخضر */
-            color: white;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-align: center;
-            transition: background-color 0.2s;
-        }
-        .buy-link:hover { background-color: #128c7e; }
+        /* التحكم بالشرائح */
+        .slide { padding: 45px; display: none; height: 100%; flex-direction: column; justify-content: flex-start; }
+        .slide.active { display: flex; animation: fadeIn 0.4s ease-in-out; }
+        
+        .slide-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--honda-red); padding-bottom: 15px; margin-bottom: 30px; }
+        .slide-title { font-size: 1.7rem; font-weight: 900; }
+        .slide-tag { background-color: var(--honda-red); color: white; padding: 4px 14px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; }
+        
+        .slide-content h3 { font-size: 1.3rem; margin-bottom: 15px; color: var(--honda-red); }
+        .slide-content ul { list-style-position: inside; }
+        .slide-content li { margin-bottom: 12px; color: #e5e7eb; font-size: 1.1rem; }
+        
+        /* أزرار التنقل */
+        .controls { display: flex; justify-content: space-between; align-items: center; padding: 20px 45px; border-top: 1px solid var(--border); background-color: #1a1a1a; border-radius: 0 0 20px 20px; }
+        .btn { background-color: var(--border); color: var(--text-white); border: 1px solid #404040; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; user-select: none; transition: all 0.2s; }
+        .btn:hover { background-color: var(--honda-red); border-color: var(--honda-red); }
+        .btn.disabled { opacity: 0.3; pointer-events: none; }
+        .slide-counter { color: var(--text-gray); font-weight: 600; font-size: 0.95rem; }
 
-        /* الفوتر */
-        footer {
-            text-align: center;
-            margin-top: 80px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1>متجر محضار <span>للخدمات الأمنية</span></h1>
-            <p>حلول برمجية واستشارات احترافية لحماية وتأمين المنشآت الرقمية بأسعار تنافسية.</p>
-        </header>
-
-        <main>
-            <div class="shop-grid">
-                
-                <!-- الخدمة الأولى -->
-                <div class="product-card">
-                    <div class="badge">الأكثر طلباً</div>
-                    <div class="icon">🛡️</div>
-                    <h3>فحص واختبار اختراق المواقع</h3>
-                    <p>تحليل أمني شامل وشديد الدقة لموقعك الإلكتروني واكتشاف الثغرات البرمجية قبل استغلالها، مع تقديم تقرير مفصل بآليات سد الثغرات.</p>
-                    <div class="price">499 ريال</div>
-                    <a href="https://wa.meً%20أستاذ%20محضار،%20أرغب%20في%20طلب%20خدمة:%20فحص%20واختبار%20اختراق%20المواقع" target="_blank" class="buy-link">طلب الخدمة عبر الواتساب</a>
-                </div>
-
-                <!-- الخدمة الثانية -->
-                <div class="product-card">
-                    <div class="icon">🧱</div>
-                    <h3>تجهيز جدران الحماية للشبكات</h3>
-                    <p>إعداد وضبط أنظمة الأمان وجدران الحماية (Firewalls) لشبكتك الداخلية لمنع الاتصالات غير المصرح بها وصد الهجمات الخارجية.</p>
-                    <div class="price">750 ريال</div>
-                    <a href="https://wa.meً%20أستاذ%20محضار،%20أرغب%20في%20طلب%20خدمة:%20تجهيز%20جدران%20الحماية%20للشبكات" target="_blank" class="buy-link">طلب الخدمة عبر الواتساب</a>
-                </div>
-
-                <!-- الخدمة الثالثة -->
-                <div class="product-card">
-                    <div class="icon">👨‍💻</div>
-                    <h3>استشارة أمنية وتقنية خاصة</h3>
-                    <p>جلسة استشارية مباشرة مدتها ساعة لمراجعة البنية التحتية لمنشأتك، ومناقشة خطط استمرارية العمل وإدارة المخاطر السيبرانية.</p>
-                    <div class="price">250 ريال</div>
-                    <a href="https://wa.meً%20أستاذ%20محضار،%20أرغب%20في%20طلب%20خدمة:%20استشارة%20أمنية%20وتقنية%20خاصة" target="_blank" class="buy-link">طلب الخدمة عبر الواتساب</a>
-                </div>
-
+    <div class="presentation-wrapper">
+        
+        <!-- الشريحة 1 -->
+        <section class="slide active">
+            <div class="slide-header">
+                <div class="slide-title">مقدمة عرض طرازات HONDA</div>
+                <div class="slide-tag">المقدمة</div>
             </div>
-        </main>
+            <div class="slide-content">
+                <h3>فلسفة الابتكار والاعتمادية اليابانية</h3>
+                <ul>
+                    <li>تعتبر شركة هوندا رمزاً عالمياً للجودة الهندسية العالية وطول العمر الافتراضي للسيارات.</li>
+                    <li>تدمج الشركة بين متعة القيادة الرياضية وبين أعلى معايير الأمان الذكي للركاب.</li>
+                    <li>في هذا العرض التقديمي، نستعرض المواصفات والمميزات الخاصة بأبرز سيارتين: أكورد وسيفيك.</li>
+                </ul>
+            </div>
+        </section>
 
-        <footer>
-            <p>جميع الحقوق محفوظة &copy; 2026 | متجر محضار مأمون باشرحيل</p>
-        </footer>
+        <!-- الشريحة 2 -->
+        <section class="slide">
+            <div class="slide-header">
+                <div class="slide-title">هوندا أكورد (Honda Accord)</div>
+                <div class="slide-tag">الفخامة الذكية</div>
+            </div>
+            <div class="slide-content">
+                <h3>سيارة السيدان الفاخرة لرجال الأعمال والشباب</h3>
+                <ul>
+                    <li><strong>المفهوم الأساسي:</strong> سيارة سيدان متوسطة الحجم تركز على عزل المقصورة والراحة الفائقة.</li>
+                    <li><strong>الأداء والمحرك:</strong> متوفرة بخيارات محركات توربو قوية وأنظمة هجينة (Hybrid) عالية الكفاءة.</li>
+                    <li><strong>التقنيات:</strong> تشتمل على حزمة أمان ذكية (Honda Sensing) لمراقبة الطرق والفرملة التلقائية.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- الشريحة 3 -->
+        <section class="slide">
+            <div class="slide-header">
+                <div class="slide-title">هوندا سيفيك (Honda Civic)</div>
+                <div class="slide-tag">الروح الرياضية</div>
+            </div>
+            <div class="slide-content">
+                <h3>السيارة الشبابية العصرية الأكثر شعبية</h3>
+                <ul>
+                    <li><strong>المفهوم الأساسي:</strong> سيدان مدمجة بتصميم هجومي منخفض يمنح ثباتاً ممتازاً في المنعطفات.</li>
+                    <li><strong>كفاءة الوقود:</strong> مصنفة كواحدة من أفضل السيارات في استهلاك الوقود للقيادة اليومية.</li>
+                    <li><strong>الترفيه:</strong> مقصورة رقمية بالكامل تدعم الاتصال اللاسلكي السريع مع الهواتف الذكية.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- أزرار التحكم والتقليب السفلي -->
+        <div class="controls">
+            <button class="btn disabled" id="prevBtn" onclick="changeSlide(-1)">السابق</button>
+            <div class="slide-counter" id="counter">الشريحة 1 من 3</div>
+            <button class="btn" id="nextBtn" onclick="changeSlide(1)">التالي</button>
+        </div>
+
     </div>
 
+    <script {nonce}>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const counter = document.getElementById('counter');
+
+        function changeSlide(direction) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide += direction;
+            slides[currentSlide].classList.add('active');
+            
+            prevBtn.classList.toggle('disabled', currentSlide === 0);
+            nextBtn.classList.toggle('disabled', currentSlide === slides.length - 1);
+            counter.innerText = `الشريحة ${currentSlide + 1} من ${slides.length}`;
+        }
+    </script>
 </body>
 </html>
+
